@@ -5,15 +5,12 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.file.Files;
-import java.util.List;
 
 
 public class FileReader {
 
     public Profile getDataFromFile(File file) {
-        try {
-            RandomAccessFile access = new RandomAccessFile(file, "r");
+        try (RandomAccessFile access = new RandomAccessFile(file, "r")) {
             FileChannel channel = access.getChannel();
             ByteBuffer buffer = ByteBuffer.allocate(256);
             int bytesRead = channel.read(buffer);
@@ -26,7 +23,6 @@ public class FileReader {
                 buffer.clear();
                 bytesRead = channel.read(buffer);
             }
-            access.close();
             String[] lines = content.toString().split(System.lineSeparator());
             String name = getValue(lines[0]);
             int age = Integer.parseInt(getValue(lines[1]));
